@@ -17,33 +17,52 @@ module Swizzle
     end
 
     def swizzle!
-      regexp = Regexp.new("\\A#{swizzle_prefix}")
+      swizzle_class_methods!
+      swizzle_instance_methods!
 
-      @swizzled_class_methods    ||= {}
-      @swizzled_instance_methods ||= {}
+      @swizzled = true
+    end
 
-      # class methods
+    private
+
+    def swizzle_prefix(prefix = nil)
+      @swizzle_prefix ||= DEFAULT_SWIZZLE_PREFIX
+      @swizzle_prefix = prefix unless prefix.nil?
+      @swizzle_prefix
+    end
+
+    def swizzle_prefix_regexp
+      Regexp.new("\\A#{swizzle_prefix}")
+    end
+
+    def swizzle_class_methods!
+      @swizzled_class_methods ||= {}
+
       swizzle_method_names = methods.select do |method_name|
-        method_name =~ regexp
+        method_name =~ swizzle_prefix_regexp
       end
+
       swizzle_method_names.each do |swizzle_method_name|
-        method_name = swizzle_method_name.to_s.sub(regexp, "").to_sym
+        method_name = swizzle_method_name.to_s.sub(swizzle_prefix_regexp, "").to_sym
         next if @swizzled_class_methods.keys.include?(method_name)
 
         swizzle_method = method(swizzle_method_name)
-        if singleton_class.method_defined?(method_name)
-          singleton_class.send(:remove_method, method_name)
-          singleton_class.send(:define_method, method_name, swizzle_method)
-          @swizzled_class_methods[method_name] = swizzle_method_name
-        end
+        next unless singleton_class.method_defined?(method_name)
+        singleton_class.send(:remove_method, method_name)
+        singleton_class.send(:define_method, method_name, swizzle_method)
+        @swizzled_class_methods[method_name] = swizzle_method_name
+      end
+    end
+
+    def swizzle_instance_methods!
+      @swizzled_instance_methods ||= {}
+
+      swizzle_instance_method_names = instance_methods.select do |instance_method_name|
+        instance_method_name =~ swizzle_prefix_regexp
       end
 
-      # instance methods
-      swizzle_instance_method_names = instance_methods.select do |instance_method_name|
-        instance_method_name =~ regexp
-      end
       swizzle_instance_method_names.each do |swizzle_instance_method_name|
-        instance_method_name = swizzle_instance_method_name.to_s.sub(regexp, "").to_sym
+        instance_method_name = swizzle_instance_method_name.to_s.sub(swizzle_prefix_regexp, "").to_sym
         next if @swizzled_instance_methods.keys.include?(instance_method_name)
 
         swizzle_instance_method = instance_method(swizzle_instance_method_name)
@@ -55,16 +74,6 @@ module Swizzle
           end
         end
       end
-
-      @swizzled = true
-    end
-
-
-    private
-    def swizzle_prefix(prefix = nil)
-      @swizzle_prefix ||= DEFAULT_SWIZZLE_PREFIX
-      @swizzle_prefix = prefix unless prefix == nil
-      @swizzle_prefix
     end
   end
   extend ClassMethods
