@@ -4,14 +4,6 @@ module Swizzle
   module ClassMethods
     DEFAULT_SWIZZLE_PREFIX = "swizzle_".freeze
 
-    def swizzle_prefix=(prefix)
-      @swizzle_prefix = prefix
-    end
-
-    def swizzle_prefix
-      @swizzle_prefix ||= DEFAULT_SWIZZLE_PREFIX
-    end
-
     def swizzled_class_methods
       @swizzled_class_methods ||= {}
     end
@@ -65,6 +57,14 @@ module Swizzle
       end
 
       @swizzled = true
+    end
+
+
+    private
+    def swizzle_prefix(prefix = nil)
+      @swizzle_prefix ||= DEFAULT_SWIZZLE_PREFIX
+      @swizzle_prefix = prefix unless prefix == nil
+      @swizzle_prefix
     end
   end
   extend ClassMethods

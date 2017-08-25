@@ -14,10 +14,6 @@ class SwizzleTest < Minitest::Test
   end
 
   def test_it_swizzle_prefix
-    assert_equal "swizzle_", SwizzlePrefixTestKlass.swizzle_prefix
-    SwizzlePrefixTestKlass.swizzle_prefix = "new_prefix_"
-    assert_equal "new_prefix_", SwizzlePrefixTestKlass.swizzle_prefix
-
     assert_equal "klass_method", SwizzlePrefixTestKlass.klass_method
     assert_equal "instance_method", SwizzlePrefixTestKlass.new.instance_method
     SwizzlePrefixTestKlass.swizzle!

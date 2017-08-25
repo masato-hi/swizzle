@@ -2,6 +2,8 @@
 class SwizzlePrefixTestKlass
   include Swizzle
 
+  swizzle_prefix :new_prefix_
+
   def self.klass_method
     "klass_method"
   end
