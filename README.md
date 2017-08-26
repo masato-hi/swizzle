@@ -1,8 +1,9 @@
+
 # Swizzle
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/swizzle`. To experiment with that code, run `bin/console` for an interactive prompt.
+swizzle is a gem for easy to do method swizzling to class methods, instance methods.
 
-TODO: Delete this and the text above, and describe your gem
+[![Build Status](https://travis-ci.org/masato-hi/swizzle.svg?branch=master)](https://travis-ci.org/masato-hi/swizzle)
 
 ## Installation
 
@@ -14,7 +15,7 @@ gem 'swizzle'
 
 And then execute:
 
-    $ bundle
+    $ bundle install
 
 Or install it yourself as:
 
@@ -22,7 +23,58 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+# include Swizzle
+class SwizzleKlass
+  include Swizzle
+
+  def self.klass_method
+    "klass_method"
+  end
+
+  def self.swizzle_klass_method
+    "swizzled_klass_method"
+  end
+
+  def instance_method
+    "instance_method"
+  end
+
+  def swizzle_instance_method
+    "swizzled_instance_method"
+  end
+end
+
+# before method swizzling.
+SwizzleKlass.klass_method #=> "klass_method"
+SwizzleKlass.new.instance_method #=> "instance_method"
+
+# do method swizzling.
+SwizzleKlass.swizzle!
+
+# after method swizzling.
+SwizzleKlass.klass_method #=> "swizzled_klass_method"
+SwizzleKlass.new.instance_method #=> "swizzled_instance_method"
+```
+
+## Example
+```ruby
+class CreditCardPaymentService
+  include Swizzle
+
+  def authorize!
+    # payment request for production.
+  end
+
+  def swizzle_authorize!
+    # return dummy response.
+  end
+end
+
+CreditCardPaymentService.swizzle! unless Rails.env.production?
+
+CreditCardPaymentService.authorize! #=> dummy response.
+```
 
 ## Development
 
@@ -32,10 +84,9 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/swizzle.
+Bug reports and pull requests are welcome on GitHub at https://github.com/masato-hi/swizzle.
 
 
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
