@@ -63,4 +63,4 @@ jobs:
 
       - name: Run test
         run: |
-          bundle exec rspec
+          bundle exec rake test
