@@ -12,6 +12,8 @@ env:
 
 jobs:
   rubocop:
+    runs-on: ubuntu-latest
+
     container:
       image: ruby:2.7.0
 
