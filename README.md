@@ -3,7 +3,8 @@
 
 swizzle is a gem for easy to do method swizzling to class methods, instance methods.
 
-[![Build Status](https://travis-ci.org/masato-hi/swizzle.svg?branch=master)](https://travis-ci.org/masato-hi/swizzle)
+![test](https://github.com/masato-hi/swizzle/workflows/test/badge.svg)
+![rubocop](https://github.com/masato-hi/swizzle/workflows/rubocop/badge.svg)
 
 ## Installation
 
