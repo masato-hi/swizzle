@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require "swizzle/version"
 
 module Swizzle
   module ClassMethods
-    DEFAULT_SWIZZLE_PREFIX = "swizzle_".freeze
+    DEFAULT_SWIZZLE_PREFIX = "swizzle_"
 
     def swizzled_class_methods
       @swizzled_class_methods ||= {}
@@ -48,8 +50,9 @@ module Swizzle
 
         swizzle_method = method(swizzle_method_name)
         next unless singleton_class.method_defined?(method_name)
-        singleton_class.send(:remove_method, method_name)
-        singleton_class.send(:define_method, method_name, swizzle_method)
+
+        singleton_class.__send__(:remove_method, method_name)
+        singleton_class.__send__(:define_method, method_name, swizzle_method)
         @swizzled_class_methods[method_name] = swizzle_method_name
       end
     end

@@ -1,16 +1,14 @@
 # This is the configuration used to check the rubocop source code.
 
 AllCops:
-  TargetRubyVersion: 2.0
+  TargetRubyVersion: 2.7
+  NewCops: enable
+  Include:
+    - lib
+    - test
 
 Style/StringLiterals:
   EnforcedStyle: double_quotes
-
-LineLength:
-  Max: 110
-
-Documentation:
-  Enabled: false
 
 Metrics/MethodLength:
   Max: 20
